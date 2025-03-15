@@ -57,4 +57,5 @@ public class Controller {
     public void endGame(@DestinationVariable String roomId) {
         redisTemplate.convertAndSend("game:end:" + roomId, "게임 종료");
     }
+
 }
