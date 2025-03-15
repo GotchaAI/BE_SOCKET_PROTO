@@ -45,9 +45,9 @@ public class RedisConfig {
 
         //컨테이너는 각 채널의 리스닝어뎁터를 받음 -> 해당 컨테이너가 모든 채널 관리가 가능함!
         container.addMessageListener(listenerAdapter, new PatternTopic("chat:all")); //채팅 채널
-        container.addMessageListener(listenerAdapter, new PatternTopic("chat:private:*")); //귓말 채널
-        container.addMessageListener(listenerAdapter, new PatternTopic("chat:room:*")); //대기방 채널
-        container.addMessageListener(listenerAdapter, new PatternTopic("game:*")); //인게임 관련 채널
+        container.addMessageListener(listenerAdapter, new PatternTopic("chat:private:*")); //귓말 채널 (*에는 닉네임 들어감)
+        container.addMessageListener(listenerAdapter, new PatternTopic("chat:room:*")); //대기방 채널 (*에는 고유 방 코드 들어감)
+        container.addMessageListener(listenerAdapter, new PatternTopic("game:*")); //인게임 관련 채널 (*에는 고유 방 코드 들어감) -> 필요 없을 것 같음
 
         return container;
     }
