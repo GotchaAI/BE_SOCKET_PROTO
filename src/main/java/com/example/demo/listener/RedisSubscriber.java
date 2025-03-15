@@ -18,7 +18,6 @@ public class RedisSubscriber implements MessageListener {
         handlers.put("chat:all", this::handleAllChat);
         handlers.put("chat:private:", this::handlePrivateChat);
         handlers.put("chat:room:", this::handleRoomChat);
-        //추가 기능 생길 시 handlers.put()만 하면, 해당 주소로 접근시 매핑된 함수 자동 호출 됨.
     }
 
     @Override
@@ -26,22 +25,28 @@ public class RedisSubscriber implements MessageListener {
         String channel = new String(pattern);
         String msg = message.toString();
 
-        // 핸들러 매칭
+        // 매칭되는 핸들러가 없으면 기본 핸들러 실행
         handlers.entrySet().stream()
                 .filter(entry -> channel.startsWith(entry.getKey()))
                 .findFirst()
-                .ifPresent(entry -> entry.getValue().accept(msg));
+                .map(Map.Entry::getValue)
+                .orElse(this::handleUnknownChannel) // 기본 핸들러
+                .accept(msg);
     }
 
     private void handleAllChat(String message) {
-        System.out.println("📢 [전체 채팅] " + message);
+        System.out.println("📢 [전체 채팅 로직 수행]");
     }
 
     private void handlePrivateChat(String message) {
-        System.out.println("📩 [귓속말] " + message);
+        System.out.println("📩 [귓속말 로직 수행]");
     }
 
     private void handleRoomChat(String message) {
-        System.out.println("🏠 [대기방 채팅] " + message);
+        System.out.println("🏠 [대기방 채팅 로직 수행]");
+    }
+
+    private void handleUnknownChannel(String message) {
+        System.out.println("❌ [알 수 없는 채널] 처리할 수 없는 메시지: " + message);
     }
 }
