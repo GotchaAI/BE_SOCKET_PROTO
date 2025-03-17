@@ -23,6 +23,8 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'//웹소켓을 사용하기 위한 라이브러리
     developmentOnly 'org.springframework.boot:spring-boot-devtools'//서버, 클라이언트 자동 시작을 도와줌
+    implementation 'org.springframework.boot:spring-boot-starter-web' //@Controller 사용 위해 추가
+
 
     //롬복 관련
     compileOnly 'org.projectlombok:lombok:1.18.36' //컴파일 시 롬복 사용
@@ -32,6 +34,7 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.36' //테스트 에서 롬복 자동 생성
 
     implementation 'org.springframework.boot:spring-boot-starter-data-redis' //redis
+
 
 }
 
