@@ -1,7 +1,7 @@
 package com.example.demo.config;
 
-import com.example.demo.listener.ChattingRedisSubscriber;
-import com.example.demo.listener.GameRedisSubscriber;
+import com.example.demo.pubsub.ChattingPubSubHandler;
+import com.example.demo.pubsub.GamePubSubHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -56,12 +56,12 @@ public class RedisConfig {
 
     // Redis에서 메시지를 수신하면 RedisSubscriber 클래스의 onMessage 메서드를 호출하도록 설정
     @Bean
-    public MessageListenerAdapter chatListenerAdapter(ChattingRedisSubscriber chattingSubscriber) {
+    public MessageListenerAdapter chatListenerAdapter(ChattingPubSubHandler chattingSubscriber) {
         return new MessageListenerAdapter(chattingSubscriber, "onMessage");
     }
 
     @Bean
-    public MessageListenerAdapter gameListenerAdapter(GameRedisSubscriber gameSubscriber) {
+    public MessageListenerAdapter gameListenerAdapter(GamePubSubHandler gameSubscriber) {
         return new MessageListenerAdapter(gameSubscriber, "onMessage");
     }
 
