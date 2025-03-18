@@ -25,7 +25,7 @@ public class RedisSubscriber implements MessageListener {
         String channel = new String(pattern);
         String msg = message.toString();
 
-        // 매칭되는 핸들러가 없으면 기본 핸들러 실행
+        // 매칭되는 핸들러가 없으면 기본 핸들러(예외 처리 함수) 실행
         handlers.entrySet().stream()
                 .filter(entry -> channel.startsWith(entry.getKey()))
                 .findFirst()
