@@ -1,6 +1,7 @@
 package com.example.demo.config;
 
-import com.example.demo.listener.RedisSubscriber;
+import com.example.demo.listener.ChattingRedisSubscriber;
+import com.example.demo.listener.GameRedisSubscriber;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,8 @@ import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import static com.example.demo.config.WebSocketConstants.*;
 
 @EnableCaching
 @Configuration
@@ -38,24 +41,28 @@ public class RedisConfig {
     @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer(
             RedisConnectionFactory connectionFactory,
-            MessageListenerAdapter listenerAdapter) {
+            MessageListenerAdapter chatListenerAdapter,
+            MessageListenerAdapter gameListenerAdapter) {
 
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
 
         //컨테이너는 각 채널의 리스닝어뎁터를 받음 -> 해당 컨테이너가 모든 채널 관리가 가능함!
-        container.addMessageListener(listenerAdapter, new PatternTopic("chat:all")); //채팅 채널
-        container.addMessageListener(listenerAdapter, new PatternTopic("chat:private:*")); //귓말 채널 (*에는 닉네임 들어감)
-        container.addMessageListener(listenerAdapter, new PatternTopic("chat:room:*")); //대기방 채널 (*에는 고유 방 코드 들어감)
-        container.addMessageListener(listenerAdapter, new PatternTopic("game:*")); //인게임 관련 채널 (*에는 고유 방 코드 들어감) -> 필요 없을 것 같음
+        container.addMessageListener(chatListenerAdapter, new PatternTopic(CHAT_PREFIX+"*")); //전체 채팅 채널
+        container.addMessageListener(gameListenerAdapter, new PatternTopic(GAME_PREFIX + "*"));//인게임 관련 채널
 
         return container;
     }
 
     // Redis에서 메시지를 수신하면 RedisSubscriber 클래스의 onMessage 메서드를 호출하도록 설정
     @Bean
-    public MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) {
-        return new MessageListenerAdapter(subscriber, "onMessage");
+    public MessageListenerAdapter chatListenerAdapter(ChattingRedisSubscriber chattingSubscriber) {
+        return new MessageListenerAdapter(chattingSubscriber, "onMessage");
+    }
+
+    @Bean
+    public MessageListenerAdapter gameListenerAdapter(GameRedisSubscriber gameSubscriber) {
+        return new MessageListenerAdapter(gameSubscriber, "onMessage");
     }
 
     @Bean
