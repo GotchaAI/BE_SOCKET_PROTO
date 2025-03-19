@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.Manager.ChannelManager;
 import com.example.demo.dto.ChatMessageReq;
 import com.example.demo.dto.GameEventReq;
 import com.example.demo.dto.GameReadyStatus;
@@ -7,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.socket.WebSocketSession;
 
 import static com.example.demo.config.WebSocketConstants.*;
 
@@ -16,6 +18,13 @@ import static com.example.demo.config.WebSocketConstants.*;
 @RequiredArgsConstructor
 public class WebSocketController {
     private final RedisTemplate<String, Object> pubSubHandler;
+    private final ChannelManager channelManager;
+
+    // WebSocket 연결 시 사용자에게 초기 채널 구독을 위한 메소드
+    @MessageMapping("/connect")
+    public void onConnect(@Payload String username, WebSocketSession session) {
+        channelManager.subscribeToInitialChannels(username, session);
+    }
 
     // 1. 전체 채팅방 메시지 전송
     @MessageMapping("/chat/all")
@@ -30,8 +39,8 @@ public class WebSocketController {
         pubSubHandler.convertAndSend(targetChannel, message);
     }
 
-    // 3. 대기방 메시지 전송
-    @MessageMapping("/chat/room/{roomId}")
+    // 3. 대기방 입장
+    @MessageMapping("/game/room/{roomId}")
     public void sendRoomMessage(@DestinationVariable String roomId, @Payload ChatMessageReq message) {
         pubSubHandler.convertAndSend(CHAT_ROOM_CHANNEL + roomId, message);
     }
@@ -61,5 +70,8 @@ public class WebSocketController {
     public void endGame(@DestinationVariable String roomId) {
         pubSubHandler.convertAndSend(GAME_END_CHANNEL + roomId, GAME_END_MESSAGE);
     }
+
+    //8. 대기방 퇴장
+
 
 }
