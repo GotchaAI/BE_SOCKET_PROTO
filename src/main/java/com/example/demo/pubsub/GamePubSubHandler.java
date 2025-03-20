@@ -1,10 +1,10 @@
 package com.example.demo.pubsub;
 
+import com.example.demo.dto.GameReadyStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import static com.example.demo.config.WebSocketConstants.GAME_END_CHANNEL;
-import static com.example.demo.config.WebSocketConstants.GAME_START_CHANNEL;
+import static com.example.demo.config.WebSocketConstants.*;
 
 @Service
 public class GamePubSubHandler extends PubSubHandler {
@@ -15,16 +15,27 @@ public class GamePubSubHandler extends PubSubHandler {
 
     @Override
     protected void initHandlers() {
-        handlers.put(GAME_START_CHANNEL, (channel, message) -> handleGameStart(message));
-        handlers.put(GAME_END_CHANNEL, (channel, message) -> handleGameEnd(message));
+        handlers.put(GAME_READY_CHANNEL, this::handleGameReady);
+        handlers.put(GAME_START_CHANNEL, this::handleGameStart);
+        handlers.put(GAME_END_CHANNEL, this::handleGameEnd);
+        handlers.put(GAME_INFO_CHANNEL, this::handleGameInfo);
     }
 
-    // 게임 관련 처리 메소드
-    private void handleGameStart(String message) {
-        messagingTemplate.convertAndSend(GAME_START_CHANNEL, message);  // 게임 시작 메시지 발송
+    private void handleGameReady(String channel, String message) {
+        GameReadyStatus gameReadyStatus = convertMessageToDto(message, GameReadyStatus.class);
+        messagingTemplate.convertAndSend(channel, gameReadyStatus);
     }
 
-    private void handleGameEnd(String message) {
-        messagingTemplate.convertAndSend(GAME_END_CHANNEL, message);  // 게임 종료 메시지 발송
+    private void handleGameStart(String channel, String message) {
+        messagingTemplate.convertAndSend(channel, message);
     }
+
+    private void handleGameEnd(String channel, String message) {
+        messagingTemplate.convertAndSend(channel, message);
+    }
+
+    private void handleGameInfo(String channel, String message) {
+
+    }
+
 }

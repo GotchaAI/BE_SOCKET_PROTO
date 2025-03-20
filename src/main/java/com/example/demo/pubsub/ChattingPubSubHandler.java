@@ -1,5 +1,6 @@
 package com.example.demo.pubsub;
 
+import com.example.demo.dto.ChatMessageReq;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,8 @@ public class ChattingPubSubHandler extends PubSubHandler {
 
     // 채팅 처리 메소드
     private void handleAllChat(String message) {
-        messagingTemplate.convertAndSend(CHAT_ALL_CHANNEL, message);  // 전체 채팅방 메시지 처리
+        ChatMessageReq chatMessageReq = convertMessageToDto(message, ChatMessageReq.class);
+        messagingTemplate.convertAndSend(CHAT_ALL_CHANNEL, chatMessageReq);  // 전체 채팅방 메시지 처리
     }
 
     private void handlePrivateChat(String channel, String message) {
@@ -31,6 +33,7 @@ public class ChattingPubSubHandler extends PubSubHandler {
 
     private void handleRoomChat(String channel, String message) {
         String roomId = channel.replace(CHAT_ROOM_CHANNEL, "");
-        messagingTemplate.convertAndSend(CHAT_ROOM_CHANNEL + roomId, message);  // 대기방 채팅 처리
+        ChatMessageReq chatMessageReq = convertMessageToDto(message, ChatMessageReq.class);
+        messagingTemplate.convertAndSend(CHAT_ROOM_CHANNEL + roomId, chatMessageReq);  // 대기방 채팅 처리
     }
 }
