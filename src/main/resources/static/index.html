@@ -1,56 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-    <title>Hello WebSocket</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link href="/main.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
-    <script src="/app.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Chat & Game</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
-    enabled. Please enable
-    Javascript and reload this page!</h2></noscript>
-<div id="main-content" class="container">
-    <div class="row">
-        <div class="col-md-6">
-            <form class="form-inline">
-                <div class="form-group">
-                    <label for="connect">WebSocket connection:</label>
-                    <button id="connect" class="btn btn-default" type="submit">Connect</button>
-                    <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect
-                    </button>
-                </div>
-            </form>
-        </div>
-        <div class="col-md-6">
-            <form class="form-inline">
-                <div class="form-group">
-                    <label for="chatRoomId">chatRoomId</label>
-                    <input type="text" id="chatRoomId" class="form-control">
-                    <label for="na">name</label>
-                    <input type="text" id="na" class="form-control">
-                    <label for="name">content</label>
-                    <input type="text" id="name" class="form-control">
-                </div>
-                <button id="send" class="btn btn-default" type="submit">Send</button>
-            </form>
-        </div>
+<div class="container">
+    <h2>닉네임을 입력하세요</h2>
+    <input type="text" id="usernameInput" placeholder="닉네임">
+    <button id="joinButton">입장</button>
+
+    <div id="chatSection" class="hidden">
+        <h2>💬 전체 채팅</h2>
+        <div id="chatBox" class="chat-box"></div>
+        <input type="text" id="chatInput" placeholder="메시지를 입력하세요...">
+        <button id="sendChatButton">전송</button>
+
+        <!-- 게임방 입장 UI 추가 -->
+        <h3>🎮 게임방 입장</h3>
+        <input type="text" id="roomIdInput" placeholder="게임방 ID 입력">
+        <button id="joinRoomButton">게임방 입장</button>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <table id="conversation" class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Chat messages</th>
-                </tr>
-                </thead>
-                <tbody id="greetings">
-                </tbody>
-            </table>
-        </div>
+
+    <div id="gameSection" class="hidden">
+        <h2>🎮 게임 대기방 (<span id="currentRoomId">-</span>)</h2>
+        <button id="readyButton">🔴 레디</button>
+        <button id="startGameButton">🚀 게임 시작</button>
+
+        <h3>📝 게임방 채팅</h3>
+        <div id="gameChatBox" class="chat-box"></div>
+        <input type="text" id="gameChatInput" placeholder="게임방 채팅 입력">
+        <button id="sendGameChatButton">전송</button>
     </div>
 </div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
