@@ -36,7 +36,7 @@ function join() {
         });
 
         // 서버에 연결 알림 (사용자 이름 전송)
-        stompClient.send("/pub/connect", {}, JSON.stringify(username));
+        stompClient.send("/pub/connect", {}, JSON.stringify({nickName : username}));
     });
 }
 
@@ -56,7 +56,7 @@ function joinRoom() {
     stompClient.send(`/pub/game/room/${roomId}`, {}, JSON.stringify({ username }));
 
     // ✅ 게임방 채팅 구독
-    stompClient.subscribe(`/sub/game/chat/${roomId}`, function (msg) {
+    stompClient.subscribe(`/sub/chat/room/${roomId}`, function (msg) {
         console.log("📝 [게임방 채팅 수신]", msg.body);
         displayGameChatMessage(JSON.parse(msg.body));
     });
@@ -83,7 +83,7 @@ function sendGameChatMessage() {
     const message = document.getElementById("gameChatInput").value.trim();
     if (!message) return;
 
-    stompClient.send(`/pub/game/chat/${roomId}`, {}, JSON.stringify({ nickName: username, content: message }));
+    stompClient.send(`/pub/chat/room/${roomId}`, {}, JSON.stringify({ nickName: username, content: message }));
     document.getElementById("gameChatInput").value = "";
 }
 
