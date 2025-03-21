@@ -20,8 +20,8 @@ public class WebSocketController {
 
     // WebSocket 첫 연결 시 초기 채널 관리
     @MessageMapping("/connect")
-    public void onConnect(@Payload String username, @Header("simpSessionId") String sessionId) {
-        channelManager.subscribeToInitialChannels(username, sessionId);
+    public void onConnect(@Payload String nickName, @Header("simpSessionId") String sessionId) {
+        channelManager.subscribeToInitialChannels(nickName, sessionId);
     }
 
     // 1. 전체 채팅방 메시지 전송
