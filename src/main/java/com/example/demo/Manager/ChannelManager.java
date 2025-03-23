@@ -81,7 +81,7 @@ public class ChannelManager {
                 .collect(Collectors.toSet());
     }
 
-    // 세션 삭제 시 모든 채널 구독 해지
+    // 세션 삭제 시(로그아웃) 모든 채널 구독 해지
     public void removeAllSubscriptions(String sessionId) {
         redisTemplate.delete(CHANNEL_PREFIX + sessionId);
         System.out.println("🗑️ 세션의 모든 구독 해지: " + sessionId);
