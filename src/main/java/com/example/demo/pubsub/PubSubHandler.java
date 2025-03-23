@@ -30,8 +30,6 @@ public abstract class PubSubHandler implements MessageListener {
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        String patternStr = (pattern != null) ? new String(pattern, StandardCharsets.UTF_8) : "DIRECT SUB";
-        System.out.println("patternStr = " + patternStr);
         String channel = new String(message.getChannel(), StandardCharsets.UTF_8);
         String msg = message.toString();
 
@@ -51,15 +49,19 @@ public abstract class PubSubHandler implements MessageListener {
 
     // 기본 핸들러: 알 수 없는 채널에 대한 처리
     private void handleUnknownChannel(String channel, String message) {
-        System.out.println("❌ [알 수 없는 채널] " + channel + " 메시지: " + message);
+        System.out.println("[알 수 없는 채널] " + channel + " 메시지: " + message);
     }
 
     protected <T> T convertMessageToDto(String message, Class<T> dtoClass) {
         try {
             return objectMapper.readValue(message, dtoClass);
         } catch (Exception e) {
-            System.err.println("❌ [JSON 변환 오류] " + e.getMessage());
+            System.err.println("[JSON 변환 오류] " + e.getMessage());
             return null;
         }
     }
 }
+
+
+//        String patternStr = (pattern != null) ? new String(pattern, StandardCharsets.UTF_8) : "DIRECT SUB";
+//        System.out.println("patternStr = " + patternStr);

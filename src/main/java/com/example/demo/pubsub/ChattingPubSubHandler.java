@@ -16,8 +16,8 @@ public class ChattingPubSubHandler extends PubSubHandler {
     @Override
     protected void initHandlers() {
         handlers.put(CHAT_ALL_CHANNEL, (channel, message) -> handleAllChat(message));
-        handlers.put(CHAT_PRIVATE_CHANNEL, (channel, message) -> handlePrivateChat(channel, message));
-        handlers.put(CHAT_ROOM_CHANNEL, (channel, message) -> handleRoomChat(channel, message));
+        handlers.put(CHAT_PRIVATE_CHANNEL, this:: handlePrivateChat);
+        handlers.put(CHAT_ROOM_CHANNEL, this:: handleRoomChat);
     }
 
     // 채팅 처리 메소드
