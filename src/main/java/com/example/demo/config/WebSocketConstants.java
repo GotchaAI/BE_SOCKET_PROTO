@@ -7,11 +7,9 @@ public interface WebSocketConstants {
     String CHAT_PRIVATE_CHANNEL = CHAT_PREFIX + "private/";  // + 보낼 상대 닉네임 (1:1 채팅)
     String CHAT_ROOM_CHANNEL = CHAT_PREFIX + "room/";  // + 방 고유 ID (방 채팅)
 
-    // 게임 관련 채널 (실제 채널 구독에 사용)
+    // 게임 관련 채널
     String GAME_PREFIX = "/sub/game/";
     String GAME_CHANNEL = GAME_PREFIX + "room/"; // + 방 고유 ID (게임 방)
-
-    // 게임 관련 채널 (이벤트별 -> pub/sub 로직 구분에 사용)
     String GAME_READY_CHANNEL = GAME_CHANNEL + "ready/"; // + roomId
     String GAME_END_CHANNEL = GAME_CHANNEL + "end/"; // + roomId
     String GAME_INFO_CHANNEL = GAME_CHANNEL + "info/"; // + roomId
