@@ -78,9 +78,6 @@ public class RedisConfig {
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
         redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
 
-        // Set<String>을 저장할 때, Jackson이 아닌 String으로 저장되도록 설정
-        redisTemplate.setDefaultSerializer(new StringRedisSerializer());
-
         return redisTemplate;
     }
 }
