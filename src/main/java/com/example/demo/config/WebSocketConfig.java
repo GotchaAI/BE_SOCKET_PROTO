@@ -20,9 +20,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     //초기 핸드쉐이크 과정에서 사용할 endpoint
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws-connect") //https 사용시 wws 하면 됨
+        registry.addEndpoint("/ws-connect")
                 .setAllowedOriginPatterns("*")
-                .withSockJS();
+                .withSockJS(); // SockJS 지원
+
+        registry.addEndpoint("/ws-connect")
+                .setAllowedOriginPatterns("*"); // 순수 WebSocket 지원
     }
+
 }
 
