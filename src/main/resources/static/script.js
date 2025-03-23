@@ -74,18 +74,67 @@ function sendChatMessage() {
     const message = document.getElementById("chatInput").value.trim();
     if (!message) return;
 
-    stompClient.send("/pub/chat/all", {}, JSON.stringify({ nickName: username, content: message }));
+    if (message.startsWith("/")) {
+        const [targetNick, ...msgParts] = message.substring(1).split(" ");
+        const privateMsg = msgParts.join(" ");
+
+        if (!targetNick || !privateMsg) {
+            alert("귓속말 형식: /닉네임 메시지");
+            return;
+        }
+
+        stompClient.send("/pub/chat/private", {}, JSON.stringify({
+            from: username,
+            to: targetNick,
+            content: privateMsg
+        }));
+
+        // 보낸 사람에게는 내가 보낸 귓속말 표시
+        displayChatMessage({
+            nickName: `귓속말 → ${targetNick}`,
+            content: privateMsg
+        });
+
+    } else {
+        stompClient.send("/pub/chat/all", {}, JSON.stringify({ nickName: username, content: message }));
+    }
+
     document.getElementById("chatInput").value = "";
 }
+
 
 // ✅ 게임방 채팅 전송
 function sendGameChatMessage() {
     const message = document.getElementById("gameChatInput").value.trim();
     if (!message) return;
 
-    stompClient.send(`/pub/chat/room/${roomId}`, {}, JSON.stringify({ nickName: username, content: message }));
+    if (message.startsWith("/")) {
+        const [targetNick, ...msgParts] = message.substring(1).split(" ");
+        const privateMsg = msgParts.join(" ");
+
+        if (!targetNick || !privateMsg) {
+            alert("귓속말 형식: /닉네임 메시지");
+            return;
+        }
+
+        stompClient.send("/pub/chat/private", {}, JSON.stringify({
+            from: username,
+            to: targetNick,
+            content: privateMsg
+        }));
+
+        displayGameChatMessage({
+            nickName: `귓속말 → ${targetNick}`,
+            content: privateMsg
+        });
+
+    } else {
+        stompClient.send(`/pub/chat/room/${roomId}`, {}, JSON.stringify({ nickName: username, content: message }));
+    }
+
     document.getElementById("gameChatInput").value = "";
 }
+
 
 // ✅ 레디 상태 변경 시 게임 채팅창에 로그 출력
 function toggleReady() {
